@@ -286,6 +286,25 @@
             from, to { border-color: transparent }
             50% { border-color: #8b0000 }
         }
+
+        /* Estilo para situações de perigo */
+        .danger {
+            border-color: #ff0000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .danger-text {
+            color: #ff6666;
+        }
+
+        .escape-option {
+            background-color: #330000;
+            border-color: #ff0000;
+        }
+
+        .escape-option:hover {
+            background-color: #550000;
+        }
     </style>
 </head>
 <body>
@@ -319,6 +338,7 @@
         // Estado do jogo
         let sanity = 100;
         let gameState = {};
+        let previousScene = null; // Para armazenar a cena anterior
         
         // Cenas do jogo
         const scenes = {
@@ -414,7 +434,7 @@ Ela se vira para mim, mas não tem rosto, apenas um vazio escuro. Minha mente gr
                 options: [
                     { text: "Correr de volta escada abaixo", next: "entrada", sanityChange: -20 },
                     { text: "Entrar no primeiro quarto à direita", next: "quarto1", sanityChange: -15 },
-                    { text: "Enfrentar a sombra", next: "gameover1", condition: () => sanity > 70, sanityChange: -30 },
+                    { text: "Enfrentar a sombra", next: "confronto_sombra", condition: () => sanity > 70, sanityChange: -30 },
                     { text: "Ficar parado e observar", next: "observar", sanityChange: -25 }
                 ]
             },
@@ -429,7 +449,7 @@ Ela se vira para mim, mas não tem rosto, apenas um vazio escuro. Minha mente gr
 A última entrada é de três semanas atrás, no dia em que ela desapareceu: "Esta noite vou enfrentar o que habita no sótão. Se não voltar, irmão, por favor não me procure. É tarde demais para mim."`,
                 options: [
                     { text: "Procurar o sótão", next: "sotao", sanityChange: -20 },
-                    { text: "Sair da biblioteca e voltar para casa", next: "gameover2", sanityChange: -25 },
+                    { text: "Sair da biblioteca e voltar para casa", next: "desistir", sanityChange: -25 },
                     { text: "Continuar procurando por mais pistas", next: "estantes", sanityChange: -10 }
                 ]
             },
@@ -443,11 +463,11 @@ No centro do círculo, está Clara. Ela está imóvel, sentada de costas para mi
 
 Ela se vira lentamente. Seus olhos são completamente pretos, e um sorriso largo se abre em seu rosto, muito largo para ser humano.
 
-"Finalmente você veio", diz uma voz que é a dela, mas ao mesmo tempo não é. "Agora podemos ficar juntos para sempre."`,
+"Finalmente você vejo", diz uma voz que é a dela, mas ao mesmo tempo não é. "Agora podemos ficar juntos para sempre."`,
                 options: [
-                    { text: "Correr em direção a ela", next: "gameover3", sanityChange: -30 },
-                    { text: "Recuar e tentar quebrar o círculo", next: "quebrar_circulo", condition: () => sanity > 30, sanityChange: -20 },
-                    { text: "Gritar seu nome com força", next: "gritar_nome", sanityChange: -25 }
+                    { text: "Correr em direção a ela", next: "armadilha", sanityChange: -20 },
+                    { text: "Recuar e tentar quebrar o círculo", next: "quebrar_circulo", condition: () => sanity > 30, sanityChange: -15 },
+                    { text: "Gritar seu nome com força", next: "gritar_nome", sanityChange: -18 }
                 ]
             },
             
@@ -465,7 +485,71 @@ Com um último esforço, esmago a última vela. Um silêncio súbito cai sobre o
                 ]
             },
             
-            // Cenas de final
+            // CENAS MELHORADAS - Não terminam o jogo, mas levam a situações perigosas
+            confronto_sombra: {
+                text: `Decido enfrentar a sombra. Avanço em direção a ela, mas antes que possa alcançá-la, algo me agarra por trás. Mãos frias e ossudas me imobilizam enquanto a sombra sem rosto se aproxima.
+
+O vazio escuro onde seu rosto deveria estar se expande para me engolir. Sinto meu corpo ficar frio, minha mente começando a se dissipar...
+
+De repente, ouço um barulho vindo de baixo - um estrondo que faz a mansão toda tremer. As mãos que me seguravam soltam por um instante. É minha chance!`,
+                options: [
+                    { text: "Correr escada abaixo enquanto posso", next: "entrada", sanityChange: -25, escape: true },
+                    { text: "Empurrar a sombra e entrar no quarto", next: "quarto_sombra", sanityChange: -30 }
+                ]
+            },
+            
+            armadilha: {
+                text: `Corro em direção a Clara, querendo abraçá-la, trazê-la de volta. Mas quando toco nela, suas mãos se fecham em meus pulsos com força sobrenatural.
+
+"Obrigada", sussurra a voz que não é dela. "Precisava de um corpo novo. O dela já estava... gasto."
+
+Sinto minha consciência se esvaindo, enquanto algo frio e antigo tenta invadir minha mente. Em um último esforço de sobrevivência, meus instintos assumem o controle. Dou um solavanco para trás, rompendo o contato. A coisa que habita Clara parece surpresa.
+
+"Você é mais forte do que pensei", ela sussurra, enquanto eu recuo em direção à escada.`,
+                options: [
+                    { text: "Descer a escada correndo", next: "entrada", sanityChange: -20, escape: true },
+                    { text: "Tentar destruir o círculo ritualístico", next: "quebrar_circulo", sanityChange: -25 }
+                ]
+            },
+            
+            quarto_sombra: {
+                text: `Consigo empurrar a sombra e entro no quarto, fechando a porta atrás de mim. O quarto está vazio, exceto por uma janela quebrada. Posso ouvir a sombra arranhando a porta do lado de fora.
+
+A janela leva a um telhado inclinado. Lá fora, a névoa está mais densa. Vejo que posso descer pelo telhado até uma varanda no andar de baixo.
+
+A porta começa a ceder. Não tenho muito tempo.`,
+                options: [
+                    { text: "Pular pela janela para o telhado", next: "telhado", sanityChange: -15 },
+                    { text: "Procurar algo para barrar a porta", next: "barricar_porta", sanityChange: -10 }
+                ]
+            },
+            
+            telhado: {
+                text: `Saio pela janela e me encontro no telhado escorregadio da mansão. A neblina é tão densa que mal consigo ver o chão. Deslizo cuidadosamente até a beirada e vejo uma varanda logo abaixo.
+
+Consigo pular para a varanda com algum esforço. Estou agora no segundo andar, em um corredor diferente. A sombra ainda deve estar no outro lado da mansão.
+
+Ouço vozes sussurrantes vindo de uma das portas.`,
+                options: [
+                    { text: "Seguir as vozes", next: "vozes_corredor", sanityChange: -12 },
+                    { text: "Descer as escadas para o hall principal", next: "entrada", sanityChange: -5 }
+                ]
+            },
+            
+            desistir: {
+                text: `Decido que já chega. Clara provavelmente já se foi, e não há sentido em me arriscar também. Começo a sair da biblioteca, mas algo estranho acontece.
+
+As portas não abrem. As janelas estão seladas como se tivessem sido pintadas por dentro. Tento forçar uma janela, mas ela não se move.
+
+Uma risada ecoa pela biblioteca. Não é humana. "Você achou que poderia simplesmente ir embora?", uma voz sussurra nas sombras. "Você já está preso aqui, como todos os outros."`,
+                options: [
+                    { text: "Procurar desesperadamente por uma saída", next: "procura_saida", sanityChange: -15 },
+                    { text: "Enfrentar o que está na biblioteca", next: "enfrentar_biblioteca", sanityChange: -20 },
+                    { text: "Tentar queimar algo para criar uma distração", next: "distracao_fogo", condition: () => sanity > 40, sanityChange: -25 }
+                ]
+            },
+            
+            // Cenas de final (verdadeiros finais)
             final1: {
                 text: `Clara cai no chão, inconsciente. Seus olhos voltaram ao normal. Quando ela acorda, minutos depois, está confusa, mas é ela de verdade.
 
@@ -488,40 +572,6 @@ Todas as noites sonho com ela, batendo nas paredes do sótão, tentando escapar.
                 ]
             },
             
-            // Cenas de game over
-            gameover1: {
-                text: `Avancei em direção à sombra, mas antes que pudesse alcançá-la, algo me agarrou por trás. Mãos frias e ossudas me imobilizaram enquanto a sombra sem rosto se aproximava.
-
-O último que vi foi o vazio escuro onde seu rosto deveria estar, expandindo-se para me engolir.
-
-Agora sou mais uma das sombras que habitam os corredores da Mansão Blackwood, esperando que outros curiosos venham nos fazer companhia.`,
-                options: [
-                    { text: "Tentar novamente", next: "restart" }
-                ]
-            },
-            
-            gameover2: {
-                text: `Decido que já chega. Clara provavelmente já se foi, e não há sentido em me arriscar também. Volto para casa, trancando as portas e janelas.
-
-Mas nas semanas seguintes, começo a ouvir sussurros à noite. Vultos se movem no canto do meu olho. Uma mancha de umidade na parede do meu quarto forma gradualmente o rosto da minha irmã.
-
-Ela não me deixará ir tão facilmente. Afinal, eu a abandonei.`,
-                options: [
-                    { text: "Tentar novamente", next: "restart" }
-                ]
-            },
-            
-            gameover3: {
-                text: `Corro em direção a Clara, querendo abraçá-la, trazê-la de volta. Mas quando toco nela, suas mãos se fecham em meus pulsos com força sobrenatural.
-
-"Obrigada", sussurra a voz que não é dela. "Precisava de um corpo novo. O dela já estava... gasto."
-
-Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu lugar. Agora somos dois em um só corpo, prisioneiros da mansão para sempre.`,
-                options: [
-                    { text: "Tentar novamente", next: "restart" }
-                ]
-            },
-            
             // Cena fallback padrão
             fallback: {
                 text: `Algo deu errado. Você se perdeu nas profundezas da mansão. O ar está frio e a escuridão é absoluta. Você precisa encontrar uma saída.`,
@@ -531,11 +581,44 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
             }
         };
 
+        // Adicionando mais cenas para completar o jogo
+        scenes.corredor = {
+            text: `O corredor é estreito e parece se estender além do alcance da minha lanterna. As paredes estão cobertas por um papel de parede desbotado que se desprende em tiras.
+
+De repente, sinto uma corrente de ar gelada. Alguém - ou algo - está respirando perto do meu ouvido. Viro-me rapidamente, mas não vejo nada.
+
+No final do corredor, uma porta entreaberta emite uma luz fraca e pulsante. De outro lado, ouço o som de choramingo suave.`,
+            options: [
+                { text: "Seguir em direção à luz pulsante", next: "luz_corredor", sanityChange: -12 },
+                { text: "Investigar o som de choramingo", next: "choramingo", sanityChange: -15 },
+                { text: "Voltar para o hall de entrada", next: "entrada", sanityChange: -5 }
+            ]
+        };
+
+        scenes.janela = {
+            text: `Subo em uma caixa de ferramentas enferrujada para olhar pela janela iluminada. O que vejo me paralisa de terror.
+
+Dentro do quarto, vejo várias figuras em pé, imóveis, de costas para a janela. Elas estão dispostas em um círculo. No centro, uma criatura esquelética com membros muito longos se contorce de maneira não natural.
+
+De repente, todas as figuras se viram ao mesmo tempo. Seus rostos são vazios, sem características. E todas estão olhando diretamente para mim.`,
+            options: [
+                { text: "Descer rapidamente e fugir", next: "fundos", sanityChange: -25, escape: true },
+                { text: "Continuar observando", next: "observar_janela", sanityChange: -30 },
+                { text: "Tentar quebrar a janela", next: "quebrar_janela", sanityChange: -20 }
+            ]
+        };
+
         // Funções do jogo
         function showScene(sceneId) {
+            // Salvar a cena anterior antes de mudar
+            if (sceneId !== "restart" && scenes[sceneId]) {
+                previousScene = sceneId;
+            }
+            
             const scene = scenes[sceneId] || scenes.fallback;
             const sceneTextElement = document.getElementById('scene-text');
             const optionsContainer = document.getElementById('options-container');
+            const sceneContainer = document.getElementById('scene-container');
             
             // Atualizar texto da cena
             sceneTextElement.textContent = scene.text;
@@ -546,6 +629,15 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
             // Limpar opções anteriores
             optionsContainer.innerHTML = '';
             
+            // Adicionar classe de perigo se for uma cena de escape
+            if (scene.options && scene.options.some(opt => opt.escape)) {
+                sceneContainer.classList.add('danger');
+                sceneTextElement.classList.add('danger-text');
+            } else {
+                sceneContainer.classList.remove('danger');
+                sceneTextElement.classList.remove('danger-text');
+            }
+            
             // Filtrar opções disponíveis com base nas condições
             let availableOptions = scene.options.filter(option => {
                 return !option.condition || option.condition();
@@ -553,13 +645,17 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
             
             // Se não houver opções disponíveis, criar uma opção de fallback
             if (availableOptions.length === 0) {
-                availableOptions = [{ text: "Continuar", next: "entrada" }];
+                availableOptions = [{ text: "Continuar", next: previousScene || "entrada" }];
             }
             
             // Adicionar opções ao container
             availableOptions.forEach(option => {
                 const button = document.createElement('button');
                 button.className = 'option-button';
+                if (option.escape) {
+                    button.classList.add('escape-option');
+                }
+                
                 button.innerHTML = `<span>${option.text}</span>`;
                 
                 button.addEventListener('click', () => {
@@ -569,7 +665,11 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
                     }
                     
                     // Ir para próxima cena
-                    showScene(option.next);
+                    if (option.next === "restart") {
+                        restartGame();
+                    } else {
+                        showScene(option.next);
+                    }
                 });
                 
                 optionsContainer.appendChild(button);
@@ -603,7 +703,7 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
             
             // Game over se a sanidade chegar a 0
             if (sanity <= 0) {
-                gameOver("SANIDADE ESGOTADA", "A mansão consumiu sua mente. Você agora é mais um dos fantasmas que assombram seus corredores, perdido para sempre na escuridão.");
+                gameOver("SANIDADE ESGOTADA", "A mansão consumiu sua mente. Você agora vagueia pelos corredores, um eco vazio do que um dia foi, preso para sempre nas memórias da Mansão Blackwood.");
             }
         }
         
@@ -624,6 +724,7 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
             // Resetar estado do jogo
             sanity = 100;
             gameState = {};
+            previousScene = null;
             
             // Atualizar display de sanidade
             const sanityValueElement = document.getElementById('sanity-value');
@@ -633,6 +734,7 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
             sanityFillElement.style.width = "100%";
             sanityFillElement.classList.remove('sanity-low');
             document.getElementById('scene-container').classList.remove('flicker');
+            document.getElementById('scene-container').classList.remove('danger');
             
             // Voltar para a cena inicial
             showScene("start");
@@ -641,15 +743,6 @@ Sinto minha consciência se esvaindo, enquanto algo frio e antigo ocupa seu luga
         // Inicializar o jogo quando o DOM estiver carregado
         document.addEventListener('DOMContentLoaded', () => {
             showScene("start");
-            
-            // Adicionar efeito sonoro (simulado) para interações
-            const buttons = document.querySelectorAll('.option-button');
-            buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Em um jogo real, tocaria um som aqui
-                    console.log("Som de clique tocaria aqui");
-                });
-            });
         });
     </script>
 </body>
