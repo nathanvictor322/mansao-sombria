@@ -572,41 +572,437 @@ Todas as noites sonho com ela, batendo nas paredes do sótão, tentando escapar.
                 ]
             },
             
-            // Cena fallback padrão
-            fallback: {
-                text: `Algo deu errado. Você se perdeu nas profundezas da mansão. O ar está frio e a escuridão é absoluta. Você precisa encontrar uma saída.`,
-                options: [
-                    { text: "Continuar", next: "entrada" }
-                ]
-            }
-        };
+            // CENAS NOVAS ADICIONADAS PARA COMPLETAR O JOGO
+            gritar: {
+                text: `Você grita o nome de Clara com toda a força que tem. Seu eco ressoa pelos corredores vazios, mas nenhuma resposta vem. Apenas o silêncio pesado da mansão.
 
-        // Adicionando mais cenas para completar o jogo
-        scenes.corredor = {
-            text: `O corredor é estreito e parece se estender além do alcance da minha lanterna. As paredes estão cobertas por um papel de parede desbotado que se desprende em tiras.
+De repente, você ouve algo se movendo no andar de cima. Passos rápidos, como se alguém estivesse correndo. Eles param diretamente acima de você, e então... silêncio novamente.
+
+Sua voz parece ter atraído atenção.`,
+                options: [
+                    { text: "Investigar os passos no andar superior", next: "escada", sanityChange: -12 },
+                    { text: "Voltar para a cozinha rapidamente", next: "cozinha", sanityChange: -8 },
+                    { text: "Sair correndo da mansão", next: "jardim", sanityChange: -5 }
+                ]
+            },
+            
+            construcao: {
+                text: `As marcas de arrasto levam até uma pequena construção de pedra, provavelmente uma antiga casa de jardineiro. A porta está semi-destruída, pendendo por uma única dobradiça enferrujada.
+
+Dentro, o ar está ainda mais frio. Há ferramentas enferrujadas espalhadas pelo chão e uma mesa com manchas escuras que você prefere não identificar.
+
+No canto mais escuro, uma escada de madeira apodrecida desce para um porão escuro. Um cheiro doce e nauseante emana de baixo.`,
+                options: [
+                    { text: "Descer pela escada até o porão", next: "porao", sanityChange: -15 },
+                    { text: "Procurar por pistas na construção", next: "construcao_pistas", sanityChange: -10 },
+                    { text: "Voltar para o jardim", next: "jardim", sanityChange: -5 }
+                ]
+            },
+            
+            construcao_pistas: {
+                text: `Você revira a pequena construção. Em um canto, encontra um caderno encharcado. A maioria das páginas está ilegível, mas você consegue ler alguns fragmentos:
+
+"O Mestre não gosta quando olhamos para ele diretamente..."
+"Clara veio aqui ontem. Ela está determinada a enfrentá-lo."
+"Os sussurros nas paredes estão ficando mais altos."
+
+De repente, a porta bate sozinha, trancando você dentro.`,
+                options: [
+                    { text: "Tentar forçar a porta", next: "construcao", sanityChange: -8 },
+                    { text: "Descer para o porão - é a única saída", next: "porao", sanityChange: -12 }
+                ]
+            },
+            
+            porao: {
+                text: `A escada range perigosamente sob seu peso, mas você consegue descer. O porão é úmido e escuro, com raízes penetrando pelas paredes de pedra.
+
+No centro, há um círculo desenhado no chão com giz branco. Velas pretas, já consumidas, formam um padrão estranho ao redor. Em um canto, você vê roupas rasgadas - reconhece o casaco de Clara.
+
+Uma voz sussurra em seu ouvido: "Ela não quer ser encontrada..."`,
+                options: [
+                    { text: "Investigar o círculo ritualístico", next: "ritual_porao", sanityChange: -18 },
+                    { text: "Pegar o casaco de Clara e sair correndo", next: "jardim", sanityChange: -12 },
+                    { text: "Procurar por mais pistas no porão", next: "porao_pistas", sanityChange: -15 }
+                ]
+            },
+            
+            arbustos: {
+                text: `Você se aproxima cautelosamente dos arbustos. Os sussurros ficam mais claros, mas ainda são indistintos - como se várias pessoas falassem ao mesmo tempo em um idioma antigo.
+
+Ao afastar os galhos, encontra algo inesperado: um buraco no chão, com degraus de pedra que descem para a escuridão. O ar que sobe é quente e cheira a enxofre.
+
+Os sussurros parecem vir de lá embaixo, convidativos e ameaçadores ao mesmo tempo.`,
+                options: [
+                    { text: "Descer pelos degraus de pedra", next: "tuneis", sanityChange: -20 },
+                    { text: "Recuar e voltar para o jardim", next: "jardim", sanityChange: -10 },
+                    { text: "Jogar uma pedra para testar a profundidade", next: "teste_buraco", sanityChange: -8 }
+                ]
+            },
+            
+            tuneis: {
+                text: `Os degraus levam a um sistema de túneis úmidos e baixos. As paredes estão cobertas por símbolos estranhos, pintados com algo que brilha fracamente no escuro.
+
+Você segue os túneis por algum tempo até chegar a uma bifurcação. À esquerda, ouve-se o som de água gotejando. À direita, os sussurros são mais claros, quase como uma canção.
+
+No chão, você vê pegadas frescas na lama. São pequenas, como as de Clara.`,
+                options: [
+                    { text: "Seguir pelo túnel da esquerda (água)", next: "tunel_agua", sanityChange: -12 },
+                    { text: "Seguir pelo túnel da direita (sussurros)", next: "tunel_sussurros", sanityChange: -18 },
+                    { text: "Voltar para o jardim", next: "jardim", sanityChange: -10 }
+                ]
+            },
+            
+            lapide: {
+                text: `Você se ajoelha para examinar a lápide mais de perto. A inscrição completa diz:
+
+"AQUELES QUE BUSCAM RESPOSTAS
+DEVEM ESTAR PREPARADOS
+PARA PERDER AS PERGUNTAS
+E A SI MESMOS
+- M.B. 1843"
+
+Ao tocar na lápide, ela cede levemente. É uma pedra falsa! Por baixo, há uma pequena cavidade contendo um diário embrulhado em couro.
+
+As páginas estão cheias de anotações sobre a família Blackwood e os rituais que praticavam.`,
+                options: [
+                    { text: "Ler o diário das sombras", next: "diario_sombras", sanityChange: -15 },
+                    { text: "Deixar o diário e voltar ao jardim", next: "jardim", sanityChange: -8 },
+                    { text: "Levar o diário consigo para investigar depois", next: "jardim", sanityChange: -5 }
+                ]
+            },
+            
+            procura_saida: {
+                text: `A porta da biblioteca está trancada, mas você não desiste. Examina as paredes em busca de outra saída. Em uma das estantes, nota algo estranho: um livro parece estar permanentemente preso à prateleira.
+
+Ao puxá-lo, ouve um clique mecânico. A estante inteira gira lentamente, revelando uma passagem secreta.
+
+Dentro, um corredor estreito e empoeirado se estende para a escuridão. O ar aqui é ainda mais velho e mofado.`,
+                options: [
+                    { text: "Entrar na passagem secreta", next: "passagem_secreta", sanityChange: -12 },
+                    { text: "Ficar na biblioteca e tentar outra coisa", next: "biblioteca", sanityChange: -5 },
+                    { text: "Procurar por algo para forçar a porta", next: "biblioteca", sanityChange: -3 }
+                ]
+            },
+            
+            passagem_secreta: {
+                text: `A passagem secreta é baixa e estreita, forçando você a caminhar agachado. Após alguns metros, ela se abre em uma pequena sala oculta.
+
+A sala contém uma mesa coberta por frascos de vidro com líquidos turvos, páginas manuscritas e instrumentos estranhos. Em uma parede, desenhos complexos mostram figuras humanas em posições de sofrimento.
+
+Em um canto, você encontra uma pequena gaiola de ferro. Dentro dela, um pássaro empalhado observa você com olhos de vidro que parecem seguir seus movimentos.`,
+                options: [
+                    { text: "Examinar os desenhos na parede", next: "desenhos_parede", sanityChange: -15 },
+                    { text: "Procurar por uma saída da sala", next: "saida_sala_secreta", sanityChange: -10 },
+                    { text: "Voltar para a biblioteca", next: "biblioteca", sanityChange: -8 }
+                ]
+            },
+            
+            gritar_biblioteca: {
+                text: `Você grita por ajuda, mas sua voz é engolida pela escuridão da biblioteca. Em vez de uma resposta, algo responde: das paredes, centenas de sussurros começam a ecoar, sobrepondo-se uns aos outros até formarem uma cacofonia ensurdecedora.
+
+Os livros nas estantes começam a vibrar. Um deles cai no chão, abrindo-se em uma página específica. As palavras parecem brilhar fracamente.
+
+Os sussurros param subitamente, deixando um silêncio ainda mais perturbador.`,
+                options: [
+                    { text: "Aproximar-se do livro que caiu", next: "livro_caido", sanityChange: -12 },
+                    { text: "Cobrir os ouvidos e tentar sair correndo", next: "biblioteca", sanityChange: -15 },
+                    { text: "Gritar novamente, desafiadoramente", next: "desafio_biblioteca", sanityChange: -20 }
+                ]
+            },
+            
+            estantes: {
+                text: `Você examina cuidadosamente as estantes. Entre os livros empoeirados, encontra alguns volumes que parecem ter sido consultados recentemente.
+
+Um deles é um tratado sobre entidades dimensionais, com anotações nas margens na caligrafia de Clara. Ela sublinhou uma passagem: "Aqueles que invocam o que vive entre os mundos raramente sobrevivem para contar a experiência."
+
+Em outra estante, você encontra uma pequena chave de ferro presa a uma etiqueta que diz "Sótão".`,
+                options: [
+                    { text: "Levar a chave do sótão", next: "chave_sotao", sanityChange: -8 },
+                    { text: "Continuar lendo o tratado", next: "tratado_entidades", sanityChange: -12 },
+                    { text: "Voltar a examinar o diário de Clara", next: "diario", sanityChange: -5 }
+                ]
+            },
+            
+            marcas_parede: {
+                text: `Você se aproxima das marcas na parede. De perto, pode ver que foram feitas com unhas humanas. As palavras "ELE VIVE NAS PAREDES" são repetidas dezenas de vezes, em tamanhos e orientações diferentes, como se tivessem sido escritas por várias pessoas em estados de pânico.
+
+Ao tocar uma das marcas, a parede parece pulsar levemente sob seus dedos, como se fosse orgânica.
+
+De repente, você ouve um arranhão vindo DE DENTRO da parede, logo atrás das palavras. Alguém - ou algo - está do outro lado.`,
+                options: [
+                    { text: "Bater na parede", next: "bater_parede", sanityChange: -15 },
+                    { text: "Recuar rapidamente", next: "cozinha", sanityChange: -12 },
+                    { text: "Sussurrar 'Clara?' para a parede", next: "sussurro_parede", sanityChange: -18 }
+                ]
+            },
+            
+            passos: {
+                text: `Você segue os passos, que parecem vir do andar superior. Subindo as escadas com cuidado, você chega a um corredor escuro.
+
+Os passos param subitamente. Você fica parado, ouvindo, até que um rangido vem de uma porta entreaberta no final do corredor. A porta se move levemente, como se alguém a tivesse empurrado por dentro.
+
+Do fundo do corredor, uma voz fraca sussurra: "Por que você veio?"`,
+                options: [
+                    { text: "Responder: 'Estou procurando minha irmã'", next: "dialogo_corredor", sanityChange: -12 },
+                    { text: "Avançar em direção à porta", next: "porta_misteriosa", sanityChange: -15 },
+                    { text: "Recuar e descer as escadas", next: "cozinha", sanityChange: -8 }
+                ]
+            },
+            
+            arma: {
+                text: `Você revira a cozinha em busca de algo que possa usar como arma. Em uma gaveta emperrada, encontra uma faca de açougueiro enferrujada. O cabo está pegajoso, e a lâmina tem manchas escuras que não parecem ser apenas ferrugem.
+
+Ao pegar a faca, você ouve um sussurro: "Sim... use-me... derrame o sangue..."
+
+A faca parece vibrar levemente em sua mão, como se tivesse vida própria.`,
+                options: [
+                    { text: "Manter a faca consigo", next: "cozinha", sanityChange: -10 },
+                    { text: "Jogar a faca fora, assustado", next: "cozinha", sanityChange: -12 },
+                    { text: "Examinar as manchas na lâmina", next: "examinar_faca", sanityChange: -15 }
+                ]
+            },
+            
+            quarto1: {
+                text: `Você entra no primeiro quarto à direita. É um quarto de criança, preservado como se o tempo tivesse parado aqui. Brinquedos antigos estão arrumados nas prateleiras, e uma boneca de porcelana está sentada em uma cadeira de balanço.
+
+A boneca vira a cabeça lentamente para olhar para você, seus olhos de vidro refletindo a luz fraca que entra pela janela quebrada.
+
+Em uma mesa, há um diário infantil aberto. A escrita é de uma criança, mas as palavras são perturbadoras: "Papai disse que devo ser quieta quando os Homens da Parede vierem visitar."`,
+                options: [
+                    { text: "Pegar o diário infantil", next: "diario_infantil", sanityChange: -12 },
+                    { text: "Sair do quarto rapidamente", next: "escada", sanityChange: -10 },
+                    { text: "Confrontar a boneca", next: "boneca_quarto", sanityChange: -18 }
+                ]
+            },
+            
+            observar: {
+                text: `Você fica parado, observando a sombra sem rosto. Ela não se move, apenas permanece no final do corredor, como se estivesse estudando você.
+
+Seus olhos (se é que ela tem olhos) parecem fixos em você. Você sente uma pressão em sua mente, como se algo estivesse tentando entrar em seus pensamentos.
+
+Imagens perturbadoras invadem sua mente: Clara gritando, paredes que respiram, figuras esqueléticas dançando em círculos. A sombra está tentando compartilhar visões com você.`,
+                options: [
+                    { text: "Tentar fechar a mente às visões", next: "fechar_mente", sanityChange: -20 },
+                    { text: "Correr escada abaixo", next: "entrada", sanityChange: -15 },
+                    { text: "Aceitar as visões para entender", next: "aceitar_visoes", sanityChange: -25 }
+                ]
+            },
+            
+            gritar_nome: {
+                text: `Você grita o nome de Clara com toda a força de seus pulmões. A coisa que se parece com sua irmã parece vacilar por um momento. Os olhos negros piscam, e por um instante fugaz, você vê os olhos castanhos familiares de Clara.
+
+"Irmão?", ela sussurra com sua verdadeira voz, antes que a escuridão retorne aos seus olhos. "Corra! Ele está-"
+
+A entidade retoma o controle antes que ela possa terminar a frase, mas você viu. Clara ainda está lá dentro, lutando.`,
+                options: [
+                    { text: "Correr em direção a ela para tentar salvá-la", next: "armadilha", sanityChange: -20 },
+                    { text: "Aproveitar a distração e quebrar o círculo", next: "quebrar_circulo", sanityChange: -10 },
+                    { text: "Gritar novamente, tentando alcançar Clara", next: "gritar_novamente", sanityChange: -15 }
+                ]
+            },
+            
+            vozes_corredor: {
+                text: `Você segue as vozes sussurrantes até uma porta no final do corredor. Ao abri-la, encontra um quarto escuro que parece ter sido um escritório.
+
+As vozes param subitamente. Na mesa, uma lanterna está acesa, iluminando um diário aberto. As páginas estão cheias de desenhos perturbadores de criaturas com muitos olhos e bocas.
+
+Uma das páginas mostra um diagrama da mansão, com um ponto marcado no sótão e as palavras: "O Umbral está aqui."`,
+                options: [
+                    { text: "Examinar o diagrama da mansão", next: "diagrama_mansao", sanityChange: -10 },
+                    { text: "Sair do quarto e descer as escadas", next: "entrada", sanityChange: -5 },
+                    { text: "Procurar por mais informações no escritório", next: "escritorio", sanityChange: -12 }
+                ]
+            },
+            
+            choramingo: {
+                text: `Você segue o som de choramingo até uma porta fechada. O som vem de dentro, fraco e desesperado.
+
+Ao abrir a porta, você encontra um quarto vazio, exceto por uma figura sentada no chão, de costas para você. Ela está vestida com as roupas de Clara.
+
+"Clara?", você pergunta.
+
+A figura se vira lentamente. Seu rosto está em branco, sem características. "Estou perdida", ela sussurra com a voz de Clara, mas ecoando como se viesse de um túnel distante.`,
+                options: [
+                    { text: "Aproximar-se da figura", next: "figura_sem_rosto", sanityChange: -20 },
+                    { text: "Fechar a porta e recuar", next: "corredor", sanityChange: -15 },
+                    { text: "Perguntar: 'O que aconteceu com você?'", next: "dialogo_figura", sanityChange: -18 }
+                ]
+            },
+            
+            observar_janela: {
+                text: `Você continua observando as figuras no quarto. Elas começam a se mover em uníssono, girando lentamente ao redor da criatura esquelética.
+
+A criatura no centro estica seu pescoço de maneira não natural e olha diretamente para você através da janela. Seus olhos brilham como brasas na escuridão.
+
+Ela aponta um dedo ossudo na sua direção, e as figuras param de girar. Todas se viram para a janela, seus rostos vazios voltados para você. Elas começam a se mover em sua direção, deslizando pelo chão.`,
+                options: [
+                    { text: "Descer correndo da caixa e fugir", next: "fundos", sanityChange: -25 },
+                    { text: "Ficar parado, hipnotizado pela cena", next: "hipnotizado_janela", sanityChange: -30 },
+                    { text: "Quebrar a janela para enfrentá-los", next: "quebrar_janela", sanityChange: -20 }
+                ]
+            },
+            
+            quebrar_janela: {
+                text: `Você pega uma pedra e quebra a janela. O vidro estilhaça com um som agudo. As figuras dentro do quarto emitem um grito coletivo que não é humano.
+
+A criatura esquelética avança rapidamente em direção à janela quebrada, seus membros se contorcendo de maneira impossível. Ela estica um braço longo demais através da abertura, tentando agarrá-lo.
+
+Você salta para trás, caindo da caixa de ferramentas. A criatura não consegue passar pela janela, mas sua mão ossuda agarra a moldura, arranhando a madeira.`,
+                options: [
+                    { text: "Correr para longe da janela", next: "fundos", sanityChange: -20 },
+                    { text: "Tentar atacar a mão com algo", next: "ataque_mao", sanityChange: -22 },
+                    { text: "Pular para dentro do quarto através da janela quebrada", next: "quarto_ritual", sanityChange: -25 }
+                ]
+            },
+            
+            barricar_porta: {
+                text: `Você procura algo para barrar a porta. Encontra um baú pesado e o empurra contra a entrada. Os arranhões do lado de fora param imediatamente.
+
+Você fica em silêncio, ouvindo. Passos se afastam, ficando mais fracos até desaparecerem completamente. A sombra foi embora.
+
+Agora você está preso no quarto, mas pelo menos seguro por enquanto. A janela ainda está aberta, levando ao telhado inclinado.`,
+                options: [
+                    { text: "Esperar alguns minutos para ter certeza", next: "esperar_barricada", sanityChange: -5 },
+                    { text: "Sair pela janela para o telhado", next: "telhado", sanityChange: -10 },
+                    { text: "Tentar mover o baú e sair pela porta", next: "quarto_sombra", sanityChange: -8 }
+                ]
+            },
+            
+            // CENAS ADICIONAIS PARA COMPLETAR O FLUXO:
+            figura_sem_rosto: {
+                text: `Você se aproxima da figura. Ela levanta a cabeça, e mesmo sem rosto, você sente que está sendo observada.
+
+"Ela está nas paredes", a figura sussurra. "Ela está em todos nós. Você não pode salvá-la. Você só pode se juntar a ela."
+
+A figura começa a se dissolver, como fumaça, deixando apenas as roupas de Clara vazias no chão. As roupas estão frias e úmidas ao toque.`,
+                options: [
+                    { text: "Pegar as roupas de Clara", next: "corredor", sanityChange: -15 },
+                    { text: "Sair correndo do quarto", next: "corredor", sanityChange: -12 }
+                ]
+            },
+            
+            esperar_barricada: {
+                text: `Você espera em silêncio por vários minutos. Nenhum som vem do corredor. Parece seguro.
+
+Ao se aproximar da porta, você percebe que pode mover o baú com algum esforço. A porta está intacta, e não há sinais da sombra do outro lado.
+
+A janela ainda está aberta, levando ao telhado escorregadio.`,
+                options: [
+                    { text: "Mover o baú e sair pela porta", next: "corredor", sanityChange: -8 },
+                    { text: "Sair pela janela para o telhado", next: "telhado", sanityChange: -10 }
+                ]
+            },
+            
+            sussurro_parede: {
+                text: `Você sussurra o nome de Clara para a parede. Por um momento, nada acontece. Então, um sussurro responde de dentro da parede:
+
+"Estou aqui... presa... ajude-me..."
+
+A voz é de Clara, mas distante, como se estivesse do outro lado de um vidro espesso. A parede parece amolecer sob seus dedos, ficando quente e pulsante.
+
+"Ele me colocou aqui... nas paredes...", a voz sussurra, antes de desaparecer em um último suspiro.`,
+                options: [
+                    { text: "Tentar quebrar a parede", next: "cozinha", sanityChange: -20 },
+                    { text: "Recuar, assustado", next: "cozinha", sanityChange: -15 }
+                ]
+            },
+            
+            // CENAS DE FALLBACK PARA COMPLETAR O FLUXO:
+            corredor: {
+                text: `O corredor é estreito e parece se estender além do alcance da minha lanterna. As paredes estão cobertas por um papel de parede desbotado que se desprende em tiras.
 
 De repente, sinto uma corrente de ar gelada. Alguém - ou algo - está respirando perto do meu ouvido. Viro-me rapidamente, mas não vejo nada.
 
 No final do corredor, uma porta entreaberta emite uma luz fraca e pulsante. De outro lado, ouço o som de choramingo suave.`,
-            options: [
-                { text: "Seguir em direção à luz pulsante", next: "luz_corredor", sanityChange: -12 },
-                { text: "Investigar o som de choramingo", next: "choramingo", sanityChange: -15 },
-                { text: "Voltar para o hall de entrada", next: "entrada", sanityChange: -5 }
-            ]
-        };
-
-        scenes.janela = {
-            text: `Subo em uma caixa de ferramentas enferrujada para olhar pela janela iluminada. O que vejo me paralisa de terror.
+                options: [
+                    { text: "Seguir em direção à luz pulsante", next: "luz_corredor", sanityChange: -12 },
+                    { text: "Investigar o som de choramingo", next: "choramingo", sanityChange: -15 },
+                    { text: "Voltar para o hall de entrada", next: "entrada", sanityChange: -5 }
+                ]
+            },
+            
+            janela: {
+                text: `Subo em uma caixa de ferramentas enferrujada para olhar pela janela iluminada. O que vejo me paralisa de terror.
 
 Dentro do quarto, vejo várias figuras em pé, imóveis, de costas para a janela. Elas estão dispostas em um círculo. No centro, uma criatura esquelética com membros muito longos se contorce de maneira não natural.
 
 De repente, todas as figuras se viram ao mesmo tempo. Seus rostos são vazios, sem características. E todas estão olhando diretamente para mim.`,
-            options: [
-                { text: "Descer rapidamente e fugir", next: "fundos", sanityChange: -25, escape: true },
-                { text: "Continuar observando", next: "observar_janela", sanityChange: -30 },
-                { text: "Tentar quebrar a janela", next: "quebrar_janela", sanityChange: -20 }
-            ]
+                options: [
+                    { text: "Descer rapidamente e fugir", next: "fundos", sanityChange: -25, escape: true },
+                    { text: "Continuar observando", next: "observar_janela", sanityChange: -30 },
+                    { text: "Tentar quebrar a janela", next: "quebrar_janela", sanityChange: -20 }
+                ]
+            },
+            
+            // CENAS DE FALLBACK PARA OPÇÕES QUE AINDA NÃO FORAM IMPLEMENTADAS:
+            ritual_porao: {
+                text: `Você examina o círculo ritualístico. Os símbolos são estranhos e antigos, e parecem brilhar fracamente no escuro. O ar ao redor do círculo está visivelmente mais frio.
+
+Ao tocar um dos símbolos com a ponta do dedo, uma visão invade sua mente: Clara, de joelhos no centro deste mesmo círculo, cercada por figuras sombrias. Ela está gritando, mas não há som.
+
+A visão some tão rapidamente quanto veio, deixando você tonto e com um zumbido nos ouvidos.`,
+                options: [
+                    { text: "Sair do porão imediatamente", next: "jardim", sanityChange: -15 },
+                    { text: "Tentar apagar o círculo", next: "jardim", sanityChange: -12 },
+                    { text: "Procurar por mais pistas", next: "porao_pistas", sanityChange: -10 }
+                ]
+            },
+            
+            porao_pistas: {
+                text: `Você vasculha o porão e encontra uma pequena caixa de metal escondida atrás de uma pedra solta. Dentro, há cartas antigas e uma fotografia desbotada.
+
+A foto mostra a família Blackwood, todos com expressões sérias. Atrás deles, uma figura alta e magra com o rosto borrado está de pé. Algo sobre essa figura faz seu sangue gelar.
+
+Nas cartas, você encontra referências a "O Guardião das Paredes" e avisos para nunca convidá-lo para dentro.`,
+                options: [
+                    { text: "Levar as cartas consigo", next: "jardim", sanityChange: -10 },
+                    { text: "Deixar tudo e sair do porão", next: "jardim", sanityChange: -8 }
+                ]
+            },
+            
+            // Cena fallback padrão (para o caso de algo realmente dar errado)
+            fallback: {
+                text: `Você sente que está perdendo a noção da realidade. As paredes parecem respirar, os sons se distorcem. É como se a própria mansão estivesse tentando confundi-lo.
+
+Respire fundo. Você precisa se concentrar. Clara ainda está em algum lugar aqui, e você precisa encontrá-la.
+
+O que você faz agora?`,
+                options: [
+                    { text: "Voltar para o hall de entrada", next: "entrada", sanityChange: -5 },
+                    { text: "Tentar encontrar uma saída", next: "jardim", sanityChange: -3 },
+                    { text: "Continuar explorando", next: "corredor", sanityChange: -8 }
+                ]
+            }
         };
+
+        // CENAS DE FALLBACK SIMPLES PARA OPÇÕES NÃO IMPLEMENTADAS:
+        // Estas cenas garantem que o jogo nunca quebre
+        const fallbackScenes = [
+            'teste_buraco', 'tunel_agua', 'tunel_sussurros', 'diario_sombras', 'saida_sala_secreta',
+            'livro_caido', 'desafio_biblioteca', 'chave_sotao', 'tratado_entidades', 'bater_parede',
+            'dialogo_corredor', 'porta_misteriosa', 'examinar_faca', 'diario_infantil', 'boneca_quarto',
+            'fechar_mente', 'aceitar_visoes', 'gritar_novamente', 'diagrama_mansao', 'escritorio',
+            'dialogo_figura', 'hipnotizado_janela', 'ataque_mao', 'quarto_ritual', 'luz_corredor',
+            'desenhos_parede', 'enfrentar_biblioteca', 'distracao_fogo'
+        ];
+
+        // Criar cenas de fallback automáticas
+        fallbackScenes.forEach(sceneId => {
+            if (!scenes[sceneId]) {
+                scenes[sceneId] = {
+                    text: `Você segue adiante, determinado a encontrar Clara. A mansão parece se reorganizar à sua volta, corredores se torcendo e portas aparecendo onde antes não havia.
+
+Sua sanidade está sendo testada, mas você não pode desistir agora. Clara precisa de você.
+
+O que você faz?`,
+                    options: [
+                        { text: "Voltar para onde estava", next: previousScene || "entrada", sanityChange: -5 },
+                        { text: "Continuar explorando", next: "corredor", sanityChange: -8 },
+                        { text: "Descansar um momento", next: previousScene || "entrada", sanityChange: 5 }
+                    ]
+                };
+            }
+        });
 
         // Funções do jogo
         function showScene(sceneId) {
