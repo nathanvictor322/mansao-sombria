@@ -528,7 +528,85 @@
                 ]
             }
         };
-        
+                // Continuação das cenas que estavam "quebradas"
+
+        hide: {
+            text: "Você se joga rapidamente atrás de um armário velho coberto por um lençol empoeirado. Seu coração dispara enquanto tenta controlar a respiração. Os passos pesados se aproximam... param bem perto de onde você está. Você sente um cheiro podre e ouve uma respiração úmida e lenta. Após alguns segundos intermináveis, os passos se afastam lentamente em direção à escada. Você espera mais um minuto antes de sair do esconderijo. Suas mãos tremem muito.",
+            choices: [
+                { text: "Subir correndo para a cozinha", next: "kitchen", sanityChange: -12 },
+                { text: "Esperar mais um pouco antes de sair", next: "hide_wait", sanityChange: -5 },
+                { text: "Tentar seguir o som dos passos discretamente", next: "follow_noise", sanityChange: -18 }
+            ]
+        },
+
+        hide_wait: {
+            text: "Você permanece imóvel por mais tempo. O silêncio volta ao porão, mas agora parece ainda mais opressivo. Quando finalmente decide sair, percebe que o lençol que te cobria caiu parcialmente, revelando seu ombro. Algo pode ter visto você... ou talvez não. O medo se instala mais fundo.",
+            choices: [
+                { text: "Sair imediatamente e subir", next: "kitchen", sanityChange: -14 },
+                { text: "Checar se realmente foi visto", next: "paranoia_check", sanityChange: -20 }
+            ]
+        },
+
+        paranoia_check: {
+            text: "Você olha freneticamente ao redor. Não vê nada... mas tem certeza de que algo te observou. A sensação de ser vigiado não sai mais da sua cabeça. Cada sombra parece viva.",
+            choices: [
+                { text: "Subir correndo (em pânico)", next: "kitchen", sanityChange: -25 },
+                { text: "Tentar se convencer que foi só imaginação", next: "kitchen", sanityChange: -8 }
+            ]
+        },
+
+        pantry: {
+            text: "Você abre a porta da despensa com cuidado. O cheiro de comida podre é forte. Prateleiras estão quase vazias, exceto por latas enferrujadas e potes quebrados. No canto, você vê uma pilha de roupas velhas... e algo que parece um pé humano pálido saindo debaixo delas. Está imóvel. Por enquanto.",
+            choices: [
+                { text: "Investigar o 'pé'", next: "pantry_foot", sanityChange: -22 },
+                { text: "Pegar uma lata pesada como arma improvisada", next: "kitchen", sanityChange: -3 },
+                { text: "Fechar a porta e sair rápido dali", next: "kitchen", sanityChange: -6 }
+            ]
+        },
+
+        pantry_foot: {
+            text: "Você se aproxima. O pé está frio e rígido. Ao puxar as roupas, você descobre que é apenas uma perna de manequim antiga... mas há sangue fresco na ponta. Alguém esteve aqui muito recentemente. Seu estômago revira.",
+            choices: [
+                { text: "Pegar a 'perna' como arma (desespero)", next: "kitchen", sanityChange: -18 },
+                { text: "Sair correndo da despensa", next: "kitchen", sanityChange: -15 },
+                { text: "Ficar parado tentando entender", next: "kitchen", sanityChange: -28 }
+            ]
+        },
+
+        ask_sister: {
+            text: "Você pergunta com voz trêmula: 'Onde está minha irmã?'. A criatura sem rosto inclina a cabeça de forma anormal e responde com sua própria voz: 'Ela está aqui... dentro de mim... quer falar com ela?' A mão esticada começa a tremer violentamente.",
+            choices: [
+                { text: "Gritar e correr para fora", next: "stairs", sanityChange: -25 },
+                { text: "Dizer 'sim, me deixe falar com ela'", next: "merge", sanityChange: -40 },
+                { text: "Tentar empurrar a criatura", next: "fight_creature", sanityChange: -30 }
+            ]
+        },
+
+        shadow: {
+            text: "Você avança pelo corredor em direção à sombra. Quanto mais perto, mais ela parece crescer. De repente, a sombra se vira — não é uma pessoa, é apenas a silhueta projetada por um cabide velho com um casaco pendurado. Mas quando você relaxa, ouve um riso baixo vindo de trás de você...",
+            choices: [
+                { text: "Virar-se rapidamente", next: "laugh_behind", sanityChange: -18 },
+                { text: "Ignorar e continuar andando", next: "end_of_corridor", sanityChange: -10 },
+                { text: "Voltar correndo para as escadas", next: "stairs", sanityChange: -8 }
+            ]
+        },
+
+        // Você pode continuar criando mais finais ou ramificações a partir daqui
+        // Exemplos de finais rápidos para testar:
+
+        merge: {
+            text: "Você diz 'sim'. A criatura sorri (mesmo sem boca) e envolve você em um abraço gelado. Você sente sua consciência se dissolvendo, misturando-se a milhares de outras vozes. Sua irmã estava mesmo ali... dentro daquela coisa. Agora você também está.",
+            gameOver: true,
+            title: "REUNIÃO FAMILIAR ETERNA",
+            ending: "Você se tornou parte da mansão para sempre."
+        },
+
+        laugh_behind: {
+            text: "Ao virar, você vê apenas o corredor vazio. Mas o riso continua, agora mais próximo. Ele vem de dentro da sua própria cabeça.",
+            gameOver: true,
+            title: "A VOZ QUE NUNCA MAIS SAI",
+            ending: "A risada nunca para. Sua sanidade acabou."
+        },
         // Função para atualizar a barra de sanidade
         function updateSanity(change) {
             gameState.sanity += change;
