@@ -1,564 +1,665 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>As Sombras da Memória</title>
-  <style>
-    /* Estilos CSS - visual de suspense/terror psicológico */
-    /* Reset básico e fonte base */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Courier New", Courier, monospace;  /* Fonte monoespaçada para clima tenso */
-    }
-    body {
-      background-color: #0a0a0a; /* Fundo preto para imersão */
-      color: #e0e0e0;           /* Texto cinza claro para bom contraste */
-      line-height: 1.6;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-    /* Container principal do jogo */
-    .game-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    /* Cabeçalho do jogo com título e estatísticas */
-    .game-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .game-header h1 {
-      font-size: 1.8em;
-      margin-bottom: 5px;
-    }
-    .game-stats {
-      font-size: 0.9em;
-      color: #cccccc;
-    }
-    .game-stats span {
-      font-weight: bold;
-    }
-    /* Área de conteúdo do jogo (imagem da cena + texto + opções) */
-    .game-content {
-      background: rgba(255,255,255,0.05); /* leve transparência para destaque */
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    .scene-container {
-      position: relative;
-      width: 100%;
-      height: 200px;
-      background: #141414;
-      border: 1px solid #333;
-      margin-bottom: 15px;
-      border-radius: 4px;
-      overflow: hidden;
-      /* A scene-container pode ser usada para imagens de fundo da cena */
-    }
-    .scene-image {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      /* Por padrão não carregaremos imagens; permanece vazio ou com fundo sólido */
-    }
-    .effect-overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: transparent;
-      transition: background 0.5s ease;
-      /* Overlay para possíveis efeitos visuais (flash de medo, etc.) */
-      pointer-events: none;
-    }
-    .dialogue-container {
-      text-align: left;
-    }
-    .dialogue-header {
-      font-size: 1em;
-      margin-bottom: 5px;
-      min-height: 1.2em;
-    }
-    .dialogue-header #character-name {
-      font-weight: bold;
-      /* Nome do personagem ou local falando, se aplicável */
-    }
-    .dialogue-text {
-      font-size: 1.0em;
-      margin-bottom: 15px;
-      white-space: pre-wrap; /* preservar quebras de linha no texto da história */
-    }
-    .dialogue-options button {
-      display: block;
-      width: 100%;
-      margin: 5px 0;
-      padding: 10px;
-      font-size: 1em;
-      background-color: #272727;
-      color: #e0e0e0;
-      border: 1px solid #444;
-      border-radius: 4px;
-      cursor: pointer;
-      text-align: left;
-    }
-    .dialogue-options button:hover {
-      background-color: #3a3a3a;
-    }
-    .game-controls {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .game-controls button {
-      margin: 0 5px;
-      padding: 8px 12px;
-      font-size: 0.9em;
-      background-color: #272727;
-      color: #e0e0e0;
-      border: 1px solid #444;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .game-controls button:hover {
-      background-color: #3a3a3a;
-    }
-    .inventory {
-      font-size: 0.9em;
-      margin-top: 10px;
-      text-align: left;
-      color: #cccccc;
-    }
-    .inventory b {
-      color: #e0e0e0;
-    }
-    /* Responsividade: ajustar fontes para telas pequenas */
-    @media(max-width: 600px) {
-      .game-header h1 {
-        font-size: 1.5em;
-      }
-      .dialogue-options button {
-        font-size: 0.9em;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Mansão Sombria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid #8b0000;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: #b30000;
+            text-shadow: 0 0 10px #8b0000;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.2rem;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .sanity-container {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+        }
+        
+        .sanity-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .sanity-bar {
+            height: 25px;
+            background-color: #222;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .sanity-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(to right, #006400, #00aa00, #ffff00, #ff6600, #ff0000);
+            transition: width 0.5s ease;
+        }
+        
+        .sanity-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px #000;
+        }
+        
+        .story-container {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 20px;
+            min-height: 200px;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+        }
+        
+        .story-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .choices-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .choice-btn {
+            background-color: #222;
+            border: 1px solid #444;
+            color: #e0e0e0;
+            padding: 15px;
+            text-align: left;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .choice-btn:hover {
+            background-color: #2a2a2a;
+            border-color: #8b0000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(139, 0, 0, 0.2);
+        }
+        
+        .choice-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .choice-btn::before {
+            content: ">";
+            position: absolute;
+            left: 10px;
+            opacity: 0.5;
+        }
+        
+        .game-over {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .game-over h2 {
+            font-size: 3rem;
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #ff0000;
+        }
+        
+        .game-over p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+        
+        .restart-btn {
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .restart-btn:hover {
+            background-color: #a30000;
+            transform: scale(1.05);
+        }
+        
+        .effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .flicker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.03);
+            opacity: 0;
+            animation: flicker 8s infinite;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 0; }
+            5%, 95% { opacity: 0.03; }
+            10%, 90% { opacity: 0; }
+            15%, 85% { opacity: 0.05; }
+            20%, 80% { opacity: 0; }
+            25%, 75% { opacity: 0.02; }
+            30%, 70% { opacity: 0; }
+            35%, 65% { opacity: 0.04; }
+            40%, 60% { opacity: 0; }
+            45%, 55% { opacity: 0.03; }
+            50% { opacity: 0; }
+        }
+        
+        .footsteps {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #222;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 1.2rem;
+        }
+        
+        .sound-toggle:hover {
+            background-color: #2a2a2a;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .choices-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="game-container">
-  <!-- Cabeçalho do jogo: título e indicadores de status -->
-  <div class="game-header">
-    <h1>AS SOMBRAS DA MEMÓRIA</h1>
-    <div class="game-stats">
-      Memórias: <span id="memoryCount">0</span> | 
-      Sanidade: <span id="sanityCount">100</span>% | 
-      Capítulo: <span id="chapterCount">1</span>
+    <div class="effects">
+        <div class="flicker"></div>
     </div>
-  </div>
-
-  <!-- Área de conteúdo do jogo -->
-  <div class="game-content">
-    <!-- Container de cena: imagem e efeito -->
-    <div class="scene-container">
-      <div id="scene-image" class="scene-image"><!-- Imagem da cena (se definida via JS) --></div>
-      <div id="effect-overlay" class="effect-overlay"><!-- Overlay para efeitos --></div>
+    
+    <div class="sound-toggle" id="soundToggle">🔊</div>
+    
+    <div class="container">
+        <header>
+            <h1>A MANSÃO SOMBRIA</h1>
+            <p class="subtitle">Sua sanidade determinará seu destino</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="sanity-container">
+                <div class="sanity-label">
+                    <span>SANIDADE</span>
+                    <span id="sanityValue">100%</span>
+                </div>
+                <div class="sanity-bar">
+                    <div class="sanity-fill" id="sanityFill"></div>
+                    <div class="sanity-text" id="sanityText">Estável</div>
+                </div>
+            </div>
+            
+            <div class="story-container">
+                <div class="story-text" id="storyText">
+                    Você está parado diante da Mansão Blackwood, uma construção antiga e decadente que há anos é evitada pelos moradores da cidade. A noite está escura, sem luar, e o vento sussurra entre as árvores mortas do jardim. Você está aqui porque sua irmã desapareceu após entrar nesta mansão três dias atrás. As únicas pistas que você tem são uma carta enigmática e um diário antigo que ela deixou para trás. A porta da frente está entreaberta, rangendo levemente com o vento. O que você faz?
+                </div>
+                
+                <div class="choices-container" id="choicesContainer">
+                    <!-- As escolhas serão inseridas aqui pelo JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="footsteps" id="footstepsText"></div>
     </div>
-    <!-- Container de diálogo: texto e escolhas -->
-    <div class="dialogue-container">
-      <div class="dialogue-header"><span id="character-name"><!-- Nome do falante (opcional) --></span></div>
-      <div id="dialogue-text" class="dialogue-text"><!-- Texto da história aparecerá aqui --></div>
-      <div id="dialogue-options" class="dialogue-options"><!-- Botões de opções aparecerão aqui --></div>
+    
+    <div class="game-over" id="gameOverScreen">
+        <h2 id="gameOverTitle">FIM DE JOGO</h2>
+        <p id="gameOverText"></p>
+        <button class="restart-btn" id="restartBtn">JOGAR NOVAMENTE</button>
     </div>
-  </div>
 
-  <!-- Controles do jogo: som, reinício, salvar, carregar -->
-  <div class="game-controls">
-    <button id="soundBtn">Som: Desligado</button>
-    <button id="restartBtn">Reiniciar</button>
-    <button id="saveBtn">Salvar</button>
-    <button id="loadBtn">Carregar</button>
-  </div>
+    <audio id="bgSound" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-dark-ambience-388.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="clickSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="sanityLowSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-heartbeat-1184.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="gameOverSound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
 
-  <!-- Inventário do jogador -->
-  <div class="inventory"><b>Inventário:</b> <span id="inventoryList"></span></div>
-</div>
-
-<!-- Elemento de áudio para música/ambiente de fundo (loop) -->
-<audio id="bg-audio" src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Rafael_Krux_-_Lights_-_Creepy_Ambient_Suspense_(cc-by)_(filmmusic).mp3" loop preload="auto"></audio>
-
-<script>
-  /* Script do jogo "As Sombras da Memória" */
-  // Variáveis globais de estado do jogo
-  let currentScene = null;
-  let chapter = 1;
-  let sanity = 100;
-  let memory = 0;
-  let inventory = [];
-
-  // Elementos do DOM para atualização
-  const characterNameEl = document.getElementById('character-name');
-  const dialogueTextEl = document.getElementById('dialogue-text');
-  const dialogueOptionsEl = document.getElementById('dialogue-options');
-  const sceneImageEl = document.getElementById('scene-image');
-  const effectOverlayEl = document.getElementById('effect-overlay');
-  const memoryCountEl = document.getElementById('memoryCount');
-  const sanityCountEl = document.getElementById('sanityCount');
-  const chapterCountEl = document.getElementById('chapterCount');
-  const inventoryListEl = document.getElementById('inventoryList');
-
-  // Objeto de definição das cenas do jogo.
-  // Cada cena tem: id, texto, nome do narrador/personagem (opcional), opções de escolha (texto da opção, id da próxima cena, efeitos na sanidade/memória, itens ganhos/perdidos, mudança de capítulo, imagem de cena).
-  const scenes = {
-    // Cena 1: Exterior da mansão (introdução)
-    1: {
-      chapter: 1,
-      text: "Você está parado diante da Mansão Blackwood, um prédio antigo e decadente que os moradores da cidade evitam há anos. A noite está sem lua, e o vento frio sussurra pelos galhos secos do jardim.\n\nVocê veio aqui porque sua irmã desapareceu após entrar nessa mansão há três dias. As únicas pistas que você tem são uma carta enigmática e o diário antigo que ela deixou para trás.\n\nA porta da frente está entreaberta, rangendo levemente com o vento. O que você faz?",
-      options: [
-        { text: "Entrar na mansão", nextScene: 2, // avançar para interior
-          // entrar sem preparação pode ser arriscado? (podemos não alterar sanidade/memória aqui)
-        },
-        { text: "Ler o diário e a carta antes de entrar", nextScene: 10,
-          // Ao ler, ganha-se memória (lembranças/pistas) e possivelmente muda nada em sanidade
-          effectMemory: 1  // aumenta memórias, representando ganhar informação
-        },
-        { text: "Desistir e fugir daqui", nextScene: 99 
-          // Escolha de fugir imediatamente - final de fugir
+    <script>
+        // Elementos do DOM
+        const storyText = document.getElementById('storyText');
+        const choicesContainer = document.getElementById('choicesContainer');
+        const sanityFill = document.getElementById('sanityFill');
+        const sanityText = document.getElementById('sanityText');
+        const sanityValue = document.getElementById('sanityValue');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const gameOverTitle = document.getElementById('gameOverTitle');
+        const gameOverText = document.getElementById('gameOverText');
+        const restartBtn = document.getElementById('restartBtn');
+        const footstepsText = document.getElementById('footstepsText');
+        const soundToggle = document.getElementById('soundToggle');
+        
+        // Elementos de áudio
+        const bgSound = document.getElementById('bgSound');
+        const clickSound = document.getElementById('clickSound');
+        const sanityLowSound = document.getElementById('sanityLowSound');
+        const gameOverSound = document.getElementById('gameOverSound');
+        
+        // Estado do jogo
+        let gameState = {
+            sanity: 100,
+            currentScene: "start",
+            soundEnabled: true,
+            visitedScenes: new Set(["start"])
+        };
+        
+        // Sistema de áudio
+        soundToggle.addEventListener('click', () => {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            soundToggle.textContent = gameState.soundEnabled ? "🔊" : "🔇";
+            
+            if (gameState.soundEnabled) {
+                bgSound.play().catch(e => console.log("Autoplay bloqueado pelo navegador"));
+            } else {
+                bgSound.pause();
+            }
+        });
+        
+        // Iniciar áudio de fundo (com tratamento para autoplay policies)
+        setTimeout(() => {
+            if (gameState.soundEnabled) {
+                bgSound.volume = 0.3;
+                bgSound.play().catch(e => console.log("Autoplay bloqueado pelo navegador"));
+            }
+        }, 1000);
+        
+        // Textos de passos aleatórios
+        const footstepsMessages = [
+            "Você ouve passos ao longe...",
+            "O vento geme através das frestas...",
+            "Um rangido vem do andar de cima...",
+            "Você sente que não está sozinho...",
+            "Um sussurro quase inaudível...",
+            "Algo se move nas sombras...",
+            "Um cheiro de mofo e decadência...",
+            "Seus instintos dizem para sair daqui..."
+        ];
+        
+        // Atualizar o texto de passos aleatoriamente
+        function updateFootsteps() {
+            if (Math.random() > 0.7) {
+                const randomMessage = footstepsMessages[Math.floor(Math.random() * footstepsMessages.length)];
+                footstepsText.textContent = randomMessage;
+                
+                // Remover após alguns segundos
+                setTimeout(() => {
+                    footstepsText.textContent = "";
+                }, 5000);
+            }
         }
-      ]
-    },
-    // Cena 2: Saguão de entrada da mansão (piso térreo)
-    2: {
-      chapter: 2,
-      text: "Você empurra a pesada porta de madeira e adentra o saguão da mansão. O ar interno é seco e empoeirado. O hall de entrada é amplo, iluminado apenas pela lua que entra por frestas nas janelas tapadas. Você vê um corredor escuro seguindo para a parte de trás da casa e uma escadaria de madeira à sua direita, levando ao piso superior. Há também uma porta fechada que parece descer ao porão.\n\nO silêncio é opressor e você sente seu coração acelerado ecoar no peito. Os arredores exalam uma presença inquietante.",
-      options: [
-        { text: "Explorar o piso térreo", nextScene: 3 
-          // Investigará salas no térreo (biblioteca, sala de estar, etc.)
-        },
-        { text: "Subir as escadas para o andar superior", nextScene: 4 
-          // Ir direto ao andar de cima
-        },
-        { text: "Chamar pela sua irmã em voz alta", nextScene: 5,
-          effectSanity: -5  // gritar por ela pode provocar algum evento estranho que reduz levemente a sanidade (eco assustador)
+        
+        // Iniciar atualização periódica
+        setInterval(updateFootsteps, 10000);
+        
+        // Cenas do jogo
+        const scenes = {
+            start: {
+                text: "Você está parado diante da Mansão Blackwood, uma construção antiga e decadente que há anos é evitada pelos moradores da cidade. A noite está escura, sem luar, e o vento sussurra entre as árvores mortas do jardim. Você está aqui porque sua irmã desapareceu após entrar nesta mansão três dias atrás. As únicas pistas que você tem são uma carta enigmática e um diário antigo que ela deixou para trás. A porta da frente está entreaberta, rangendo levemente com o vento. O que você faz?",
+                choices: [
+                    { text: "Entrar pela porta da frente", next: "entrance", sanityChange: -5 },
+                    { text: "Dar a volta e tentar uma entrada pelos fundos", next: "backdoor", sanityChange: 0 },
+                    { text: "Procurar por uma janela aberta", next: "window", sanityChange: -2 },
+                    { text: "Desistir e voltar para a cidade", next: "giveup", sanityChange: 10 }
+                ]
+            },
+            entrance: {
+                text: "Você empurra a pesada porta de madeira, que range alto ao se mover. O interior da mansão é ainda mais escuro que o exterior, e o ar é pesado com o cheiro de mofo e algo mais... metálico. Na entrada, há um grande hall com uma escadaria que leva ao andar superior. À sua esquerda, uma porta entreaberta revela o que parece ser uma sala de estar. À direita, um corredor escuro. No chão, você vê pegadas recentes na poeira. Elas parecem levar para cima.",
+                choices: [
+                    { text: "Seguir as pegadas pela escada", next: "stairs", sanityChange: -8 },
+                    { text: "Investigar a sala à esquerda", next: "livingroom", sanityChange: -3 },
+                    { text: "Explorar o corredor à direita", next: "corridor", sanityChange: -5 },
+                    { text: "Voltar para fora e reconsiderar", next: "start", sanityChange: 5 }
+                ]
+            },
+            backdoor: {
+                text: "Você contorna a mansão, tropeçando em arbustos mortos e detritos. Os fundos são ainda mais sombrios, com uma velha cozinha de serviço cuja porta está parcialmente destruída. Ao entrar, você vê um fogão antigo, uma mesa coberta com utensílios enferrujados e algo que parece ser sangue seco no chão. Há uma porta que leva para dentro da mansão e uma escada estreita que desce para um porão.",
+                choices: [
+                    { text: "Entrar na mansão pela cozinha", next: "kitchen", sanityChange: -4 },
+                    { text: "Descer a escada para o porão", next: "basement", sanityChange: -12 },
+                    { text: "Procurar por pistas na cozinha", next: "kitchen_clues", sanityChange: -6 },
+                    { text: "Sair e voltar para a frente da mansão", next: "start", sanityChange: 0 }
+                ]
+            },
+            window: {
+                text: "Você anda ao redor da mansão, encontrando várias janelas, mas todas estão trancadas ou emperradas. Finalmente, no lado leste, você encontra uma janela quebrada, grande o suficiente para passar. Ao entrar, você se encontra em uma biblioteca empoeirada. Estantes cheias de livros antigos cobrem as paredes. No centro da sala, uma poltrona está virada para uma lareira apagada. No chão, perto da poltrona, você vê um livro aberto com uma marcação.",
+                choices: [
+                    { text: "Examinar o livro aberto", next: "book", sanityChange: -8 },
+                    { text: "Procurar por uma saída da biblioteca", next: "library_exit", sanityChange: -3 },
+                    { text: "Investigar as estantes de livros", next: "bookshelves", sanityChange: -5 },
+                    { text: "Voltar pela janela", next: "start", sanityChange: 2 }
+                ]
+            },
+            giveup: {
+                text: "Você decide que isso é loucura. A mansão tem uma reputação terrível e você não está preparado para enfrentar o que possa estar lá dentro. Vira as costas e começa a caminhar de volta para a cidade, prometendo a si mesmo que vai chamar as autoridades pela manhã. Mas conforme você se afasta, você jura ouvir um grito abafado vindo da mansão... o grito de sua irmã. Sua sanidade se recupera um pouco, mas a culpa começa a consumi-lo.",
+                choices: [
+                    { text: "Correr de volta para a mansão", next: "start", sanityChange: -15 },
+                    { text: "Continuar para a cidade", next: "city", sanityChange: 20 }
+                ]
+            },
+            stairs: {
+                text: "Você sobe as escadas, cada degrau rangendo sob seu peso. No topo, um longo corredor se estende à sua frente, com várias portas de cada lado. O corredor é iluminado apenas por uma fraca luz lunar que entra por uma janela no final. De repente, você ouve um choro abafado vindo de uma das portas à sua direita. Ao mesmo tempo, uma sombra parece se mover na extremidade do corredor.",
+                choices: [
+                    { text: "Seguir o som do choro", next: "crying_room", sanityChange: -10 },
+                    { text: "Investigar a sombra no final do corredor", next: "shadow", sanityChange: -15 },
+                    { text: "Abrir a primeira porta à esquerda", next: "bedroom", sanityChange: -7 },
+                    { text: "Voltar descer as escadas", next: "entrance", sanityChange: 3 }
+                ]
+            },
+            crying_room: {
+                text: "Você segue o som do choro até uma porta que está levemente entreaberta. Ao empurrá-la, você encontra um quarto de criança, decorado com brinquedos antigos e um berço. No centro do quarto, uma figura pequena está de costas para você, chorando. Quando ela se vira, você vê que não tem rosto, apenas uma superfície lisa e pálida. Ela estende uma mão em sua direção e sussurra: 'Por que você demorou tanto?'",
+                choices: [
+                    { text: "Correr para fora do quarto", next: "stairs", sanityChange: -20 },
+                    { text: "Perguntar sobre sua irmã", next: "ask_sister", sanityChange: -15 },
+                    { text: "Tentar ajudar a criatura", next: "help_creature", sanityChange: -25 },
+                    { text: "Fechar os olhos e contar até dez", next: "stairs", sanityChange: -10 }
+                ]
+            },
+            city: {
+                text: "Você chega à cidade e vai direto para a delegacia. Os policiais ouvem sua história com ceticismo, mas concordam em investigar pela manhã. Quando o sol nasce, um grupo vai até a mansão, mas não encontram nada além de uma casa velha e vazia. Sua irmã nunca é encontrada. Anos depois, você ainda tem pesadelos com a mansão e ouve choros à noite. Sua sanidade se recuperou, mas você nunca mais será o mesmo.",
+                gameOver: true,
+                title: "FIM SEGURO... MAS A QUE CUSTO?",
+                ending: "Você sobreviveu, mas abandonou sua irmã. Sua sanidade está intacta, mas sua consciência nunca lhe dará paz."
+            },
+            basement: {
+                text: "A escada para o porão range perigosamente sob seus pés. Ao chegar abaixo, o cheiro de decomposição é quase insuportável. O porão é úmido e escuro, com apenas uma pequena janela suja deixando entrar um pouco de luz lunar. Você acende uma luz fraca e vê que o lugar está cheio de velhos móveis cobertos com lençóis. No centro, há uma mesa de madeira com correntes e manchas escuras. De repente, você ouve um barulho de arrastar vindo de um canto escuro.",
+                choices: [
+                    { text: "Investigar o barulho", next: "noise", sanityChange: -25 },
+                    { text: "Examinar a mesa com correntes", next: "table", sanityChange: -20 },
+                    { text: "Correr de volta para cima", next: "backdoor", sanityChange: -15 },
+                    { text: "Esconder-se atrás dos móveis", next: "hide", sanityChange: -10 }
+                ]
+            },
+            noise: {
+                text: "Você se aproxima cautelosamente do canto escuro. Seus olhos gradualmente se ajustam à escuridão, e você vê uma figura encolhida no chão. Quando ela levanta a cabeça, você reconhece o rosto pálido e assustado de sua irmã! 'Você veio!' ela sussurra. 'Temos que sair daqui agora! Ele vai voltar a qualquer momento!' Antes que você possa responder, você ouve passos pesados descendo as escadas.",
+                choices: [
+                    { text: "Fugir com sua irmã pela saída dos fundos", next: "escape", sanityChange: 30 },
+                    { text: "Enfrentar o que está vindo", next: "confront", sanityChange: -30 },
+                    { text: "Esconder-se com sua irmã", next: "hide_together", sanityChange: -15 },
+                    { text: "Perguntar quem é 'ele'", next: "ask_who", sanityChange: -20 }
+                ]
+            },
+            escape: {
+                text: "Você agarra sua irmã pela mão e os dois correm para a escada, subindo dois degraus de cada vez. Os passos pesados estão logo atrás de vocês. Vocês alcançam a cozinha e saem correndo pelos fundos, não parando até chegarem à floresta. Quando olham para trás, a mansão parece encolher na distância. Vocês conseguem chegar à cidade e chamar a polícia. Quando eles retornam à mansão, não encontram ninguém, mas descobrem evidências de atividades sinistras. Vocês sobrevivem, mas ambos estão marcados pela experiência.",
+                gameOver: true,
+                title: "FUGITIVOS",
+                ending: "Você resgatou sua irmã e escapou da mansão. Sua sanidade está abalada, mas vocês estão vivos e juntos."
+            },
+            confront: {
+                text: "Você se posiciona na frente de sua irmã, pronto para enfrentar o que quer que esteja descendo as escadas. Uma figura alta e distorcida aparece, com membros muito longos e um rosto sem características definidas. 'Outro visitante', sussurra uma voz que parece vir de todos os lados ao mesmo tempo. Você sente uma dor de cabeça excruciante enquanto a criatura se aproxima. Sua sanidade se esvai completamente enquanto a criatura alcança você...",
+                gameOver: true,
+                title: "SANIDADE PERDIDA",
+                ending: "Você enfrentou o horror diretamente e sua mente não conseguiu suportar. Sua sanidade chegou a zero e você se tornou mais uma vítima da Mansão Blackwood."
+            },
+            // Mais cenas continuariam aqui...
+            kitchen: {
+                text: "Você entra na mansão pela cozinha. O lugar está em estado lastimável, com móveis quebrados e utensílios espalhados pelo chão. Na mesa, você encontra uma lanterna que ainda funciona. Ao ligá-la, você vê portas que levam para um corredor e para uma despensa. De repente, você ouve um barulho vindo da despensa.",
+                choices: [
+                    { text: "Investigar a despensa", next: "pantry", sanityChange: -8 },
+                    { text: "Seguir pelo corredor", next: "hallway", sanityChange: -5 },
+                    { text: "Procurar por armas", next: "weapons", sanityChange: -2 },
+                    { text: "Voltar para fora", next: "backdoor", sanityChange: 3 }
+                ]
+            }
+        };
+        
+        // Função para atualizar a barra de sanidade
+        function updateSanity(change) {
+            gameState.sanity += change;
+            
+            // Limitar sanidade entre 0 e 100
+            if (gameState.sanity > 100) gameState.sanity = 100;
+            if (gameState.sanity < 0) gameState.sanity = 0;
+            
+            // Atualizar visualmente
+            sanityFill.style.width = `${gameState.sanity}%`;
+            sanityValue.textContent = `${gameState.sanity}%`;
+            
+            // Atualizar texto descritivo
+            let sanityStatus = "";
+            if (gameState.sanity >= 80) sanityStatus = "Estável";
+            else if (gameState.sanity >= 60) sanityStatus = "Levemente Abalada";
+            else if (gameState.sanity >= 40) sanityStatus = "Abalada";
+            else if (gameState.sanity >= 20) sanityStatus = "Crítica";
+            else sanityStatus = "À Beira da Loucura";
+            
+            sanityText.textContent = sanityStatus;
+            
+            // Efeito de áudio quando a sanidade está baixa
+            if (gameState.sanity < 30 && gameState.soundEnabled) {
+                sanityLowSound.play().catch(e => console.log("Erro no áudio"));
+            }
+            
+            // Verificar se a sanidade chegou a zero
+            if (gameState.sanity <= 0) {
+                gameOver("Sua sanidade se esgotou completamente. A realidade desmorona ao seu redor e você perde o controle de sua mente, tornando-se mais uma alma perdida da Mansão Blackwood.", "SANIDADE ESGOTADA");
+            }
         }
-      ]
-    },
-    // Cena 3: Explorando piso térreo (biblioteca/sala de estar)
-    3: {
-      chapter: 2,
-      text: "Decidido a inspecionar o piso térreo, você avança pelo corredor escuro. Seus passos levantam uma fina camada de poeira do carpete desgastado. À esquerda, você encontra o que parece ser uma antiga biblioteca ou escritório: estantes cheias de livros embolorados cobrem as paredes. Sobre a mesa, uma vela derretida e papéis espalhados sugerem que alguém esteve pesquisando algo aqui recentemente.\n\nEnquanto examina o local, um rangido súbito ressoa do corredor – passos leves, como se alguém (ou algo) estivesse se movendo nas sombras. Seu coração dispara.",
-      options: [
-        { text: "Se esconder atrás da estante", nextScene: 6,
-          effectSanity: -10  // a tensão de se esconder aumenta o medo, reduz sanidade
-        },
-        { text: "Ir até o corredor para investigar o som", nextScene: 7,
-          effectSanity: -15  // enfrentar diretamente o desconhecido é assustador, sanidade cai mais
+        
+        // Função para mostrar cena
+        function showScene(sceneId) {
+            const scene = scenes[sceneId];
+            
+            if (!scene) {
+                console.error(`Cena "${sceneId}" não encontrada!`);
+                return;
+            }
+            
+            gameState.currentScene = sceneId;
+            gameState.visitedScenes.add(sceneId);
+            
+            // Atualizar texto da história
+            storyText.textContent = scene.text;
+            
+            // Limpar escolhas anteriores
+            choicesContainer.innerHTML = "";
+            
+            // Se for um fim de jogo
+            if (scene.gameOver) {
+                gameOver(scene.ending, scene.title);
+                return;
+            }
+            
+            // Adicionar novas escolhas
+            scene.choices.forEach((choice, index) => {
+                const button = document.createElement("button");
+                button.className = "choice-btn";
+                button.textContent = choice.text;
+                
+                // Adicionar efeito de já visitada
+                if (gameState.visitedScenes.has(choice.next)) {
+                    button.style.opacity = "0.8";
+                    button.style.borderStyle = "dashed";
+                }
+                
+                button.addEventListener('click', () => {
+                    // Efeito sonoro
+                    if (gameState.soundEnabled) {
+                        clickSound.currentTime = 0;
+                        clickSound.play().catch(e => console.log("Erro no áudio"));
+                    }
+                    
+                    // Atualizar sanidade
+                    updateSanity(choice.sanityChange);
+                    
+                    // Mostrar próxima cena
+                    setTimeout(() => showScene(choice.next), 300);
+                });
+                
+                choicesContainer.appendChild(button);
+            });
         }
-      ]
-    },
-    // Cena 4: Andar superior (corredor dos quartos)
-    4: {
-      chapter: 2,
-      text: "Você sobe cada degrau rangente da escada, adentrando o andar superior. O corredor do segundo andar é estreito e longo, iluminado fracamente por uma pequena janela no fim do corredor. Quadros antigos e retratos de família cobrem as paredes, observando-o em silêncio. Portas de quartos ladeiam o corredor.\n\nAo testar as maçanetas, você percebe que a maioria dos cômodos está trancada, exceto por uma porta entreaberta de onde sai um leve odor de mofo. Dentro, há um quarto que parece ser de uma jovem - talvez o antigo quarto de alguma moradora. Sobre a cômoda, algo brilha com a luz da lua: uma pequena chave antiga, pendurada em um cordão.",
-      options: [
-        { text: "Pegar a chave antiga", nextScene: 8,
-          addItem: "Chave do Porão", effectMemory: 1 
-          // Encontrar a chave do porão (adiciona ao inventário) e memórias +1 (agora sabe que pode abrir porão)
-        },
-        { text: "Ignorar a chave e continuar explorando", nextScene: 8 
-          // Simplesmente segue sem pegar (podemos lidar com falta da chave depois)
+        
+        // Função de fim de jogo
+        function gameOver(message, title) {
+            gameOverTitle.textContent = title;
+            gameOverText.textContent = message;
+            gameOverScreen.style.display = "flex";
+            
+            // Tocar som de game over
+            if (gameState.soundEnabled) {
+                gameOverSound.play().catch(e => console.log("Erro no áudio"));
+                bgSound.pause();
+            }
         }
-      ]
-    },
-    // Cena 5: Chamou pela irmã no saguão
-    5: {
-      chapter: 2,
-      text: "Você chama alto pelo nome de sua irmã, quebrando o silêncio da mansão: \"Anna! Você está aí?!\". Sua voz ecoa pelos corredores vazios. Por um momento, tudo permanece em silêncio absoluto. Então, subitamente, um barulho surdo vem do andar de cima – como um movimento abrupto de algum móvel ou porta.\n\nSeu grito parece ter alertado algo. O ambiente fica ainda mais pesado, como se a própria casa desaprovasse sua presença. Talvez seja melhor prosseguir com cautela.",
-      options: [
-        { text: "Explorar o piso térreo", nextScene: 3 },
-        { text: "Subir as escadas para o andar superior", nextScene: 4 }
-      ]
-    },
-    // Cena 6: Se escondendo de algo no piso térreo
-    6: {
-      chapter: 2,
-      text: "Você apaga sua lanterna instintivamente e se esgueira atrás de uma estante pesada, contendo o fôlego. As pegadas lentas adentram a biblioteca. Por uma fresta entre os livros, você vislumbra uma silhueta alta e disforme parada à porta. Um odor nauseante de podridão invade a sala. A figura parece *farejar* o ar, procurando algo... ou alguém.\n\nSeu coração martela em seus ouvidos. Depois de instantes de terror, a presença vira-se lentamente e se afasta, suas passadas ecoando de volta ao corredor e sumindo. Você espera alguns minutos até ter certeza de que está sozinho novamente.",
-      options: [
-        { text: "Sair do esconderijo e continuar explorando o piso térreo", nextScene: 7 
-          // Depois de se esconder, prossegue exploração no térreo
-        },
-        { text: "Correr de volta ao saguão de entrada", nextScene: 2,
-          effectSanity: -5 
-          // Retroceder apressadamente para o hall, levemente abalado
-        }
-      ]
-    },
-    // Cena 7: Investigando o som no térreo ou pós-esconderijo
-    7: {
-      chapter: 2,
-      text: "Você reúne coragem e retorna ao corredor principal do térreo. Não há sinal visível de ninguém, mas o ar parece gelado e opressivo. Ao fundo do corredor está a porta reforçada que leva ao porão. Você tenta girar a maçaneta: trancada. Provavelmente precisa de uma chave.\n\nNo silêncio, você escuta ao longe um choro baixo e desesperado vindo de algum lugar abaixo – é a voz da sua irmã, amortecida pelos pisos! Ela está viva, presa em algum lugar no porão. Você **precisa** entrar lá.",
-      options: [
-        { text: "Voltar ao saguão e subir em busca da chave no andar superior", nextScene: 4 
-          // Volta para buscar a chave no andar de cima
-        },
-        { text: "Tentar arrombar a porta do porão à força", nextScene: 9,
-          effectSanity: -10 
-          // Tentar arrombar sem sucesso pode abalar e machucar (sanidade desce um pouco pela frustração/desespero)
-        }
-      ]
-    },
-    // Cena 8: Após coletar (ou não) a chave, decidir próximo passo
-    8: {
-      chapter: 2,
-      text: "Com a sua busca no andar superior concluída, você se prepara para descer novamente. " + 
-            (inventory.includes("Chave do Porão") 
-             ? "A pequena chave antiga que você encontrou deve servir para abrir a porta do porão. " 
-             : "Você percebe que não encontrou nada útil para abrir a porta do porão. ") + 
-            "Sua irmã provavelmente está lá embaixo, e cada segundo conta.\n\nVocê retorna ao saguão decidido a acessar o porão o quanto antes.",
-      options: [
-        { text: "Descer ao porão", nextScene: 9 
-          // Vai para a cena do porão, se tiver a chave conseguirá entrar; se não, tentará arrombar
-        },
-        { text: "Chamar novamente pela sua irmã", nextScene: 5,
-          effectSanity: -5 
-          // Permite chamar novamente (pode não ser muito útil, mas incluído por completude)
-        }
-      ]
-    },
-    // Cena 9: Entrada do Porão (confronto final se possível)
-    9: {
-      chapter: 3,
-      text: function() {
-        // Texto depende de ter ou não chave do porão
-        if (inventory.includes("Chave do Porão")) {
-          return "Você desce a escada estreita atrás da porta, usando a chave antiga para destrancá-la. O cheiro de umidade e mofo aumenta a cada passo. O porão é frio e escuro; suas paredes de pedra refletem sua luz trêmula.\n\nNo fundo do porão, você finalmente encontra sua irmã, acorrentada a uma viga, exausta mas viva. Ao correr para libertá-la, uma sombra grotesca materializa-se entre vocês - a figura disforme que perambula pela mansão. Olhos amarelos brilham na escuridão. Uma voz gutural ecoa: \"Vocês não sairão...\".\n\nSua irmã olha para você com terror nos olhos. Esta é a entidade que a manteve presa. Você precisa agir rápido!";
-        } else {
-          return "Você desce até a porta do porão e tenta forçá-la mais uma vez, mas está firmemente trancada. Do outro lado, você consegue ouvir a sua irmã choramingando seu nome. O desespero toma conta - sem a chave, você não pode abrir a porta.\n\nDe repente, um golpe violento do outro lado da porta faz a madeira tremer. Algo percebeu sua presença e agora se agita no porão. Com um estalo alto, a porta inexplicavelmente se destranca e se escancara sozinha, revelando a escuridão abaixo.\n\nVocê desce cautelosamente as escadas. No fundo do porão, sua irmã está acorrentada e uma forma sombria está ao lado dela, quase indistinta na penumbra. Olhos amarelos o encaram do escuro. A criatura que habita esta mansão não permitirá a saída de vocês facilmente.";
-        }
-      }(),
-      options: [
-        { text: "Enfrentar a entidade para salvar sua irmã", nextScene: 90,
-          // Enfrentar diretamente - resultado depende se tem conhecimento (memória) ou não
-          // Definiremos o desfecho na cena 90 de acordo com memory
-        },
-        { text: "Se esconder nas sombras e observar", nextScene: 91 
-          // Tentar se ocultar em vez de agir
-        },
-        { text: "Pegar sua irmã e fugir imediatamente", nextScene: 92,
-          effectSanity: -20 
-          // Tentativa de fuga apressada, pode ter consequências (sanidade cai pelo pânico)
-        }
-      ]
-    },
-    // Cena 10: Lendo o diário e a carta (antes de entrar)
-    10: {
-      chapter: 1,
-      text: "Você decide que é melhor se preparar antes de entrar. À luz da lanterna, você abre o diário antigo de sua irmã e releia a carta enigmática:\n\n\"...as sombras da memória me perseguem nesta casa. Há algo antigo e faminto aqui. Se eu não retornar, meu irmão, não siga os meus passos sem estar preparado. Lembre-se de nossa canção de infância... ela pode manter você lúcido quando a escuridão vier...\"\n\nVocê sente um calafrio. As palavras dela são um aviso. Munido desse conhecimento e com as pistas em mente, você respira fundo e encara a porta entreaberta da mansão.",
-      options: [
-        { text: "Guardar o diário e entrar na mansão", nextScene: 2 
-          // Após ler, prossegue para cena 2 (saguão) com memory já incrementada
-        }
-      ]
-    },
-    // Cena 90: Desfecho ao enfrentar a entidade
-    90: {
-      chapter: 3,
-      text: function() {
-        if (memory >= 1) {
-          // O jogador tem lembranças/pistas suficientes (leu diário/carta) para saber o que fazer
-          return "A criatura avança em sua direção, emitindo um grito agudo que ecoa pelo porão. Lembrando-se das pistas do diário de sua irmã, você começa a cantar baixinho a canção de ninar de sua infância – a mesma canção que vocês dois conhecem desde pequenos. A entidade hesita, perturbada pela melodia familiar. Aproveitando a oportunidade, você agarra um pedaço de madeira próximo e, com determinação, golpeia a criatura.\n\nUm uivo sobrenatural explode enquanto a sombra se dissipa no ar, enfraquecida pela sua resistência mental e pela força do laço familiar representado na canção. As correntes que prendem sua irmã caem ao chão. Ela, tremendo, abraça você com força. Juntos, vocês sobem as escadas e saem da mansão.\n\n**FIM DE JOGO - Final Bom:** Você derrotou a entidade e salvou sua irmã. As memórias sombrias desta noite os assombrarão, mas ambos escaparam com vida.";
-        } else {
-          // O jogador não leu as pistas (memory < 1), então não sabe a canção/ritual -> final de loucura
-          sanity = 0; // força sanidade a zero
-          return "Você tenta enfrentar a criatura de frente, investindo contra a escuridão com coragem cega. No entanto, sem nenhuma compreensão do que está enfrentando, sua mente é inundada por visões aterrorizantes projetadas pela entidade. A criatura não precisa nem tocá-lo – as imagens em sua cabeça são insuportáveis.\n\nVocê cai de joelhos, gritando. Sua irmã chama por você em pânico, mas sua visão escurece nas bordas. A última coisa que você vê é a figura disforme pairando sobre você...\n\n**FIM DE JOGO - Você Enlouqueceu:** A pressão sobrenatural destruiu a sua sanidade. Mesmo que seu corpo possa eventualmente ser encontrado vivo, sua mente está perdida para sempre nas sombras da mansão. Sua irmã permanece nas garras do mal.";
-        }
-      }(),
-      options: [
-        { text: "Jogar novamente", nextScene: 1 
-          // Permite recomeçar o jogo do início
-        }
-      ]
-    },
-    // Cena 91: Desfecho ao se esconder durante o confronto final
-    91: {
-      chapter: 3,
-      text: "Com medo dominando suas ações, você recua para as sombras atrás de alguns barris, tentando não chamar atenção. A entidade esgueira-se ao redor de sua irmã acorrentada. Em um silêncio apavorante, a criatura começa a se aproximar dela.\n\nSua irmã o vê escondido e estende a mão trêmula, implorando por socorro com o olhar. Mas você permanece paralisado, incapaz de reagir. A sombra disforme envolve sua irmã, e seu grito final ecoa pelas paredes de pedra.\n\nA entidade então se volta lentamente para onde você está. Antes que consiga reagir, uma dor lancinante atravessa seu corpo – e tudo escurece.\n\n**FIM DE JOGO - Você Morreu:** Ao hesitar e se esconder, você perdeu a chance de salvar sua irmã e foi brutalmente eliminado pela criatura. A mansão silencia novamente, ocultando os horrores ocorridos em seu interior.",
-      options: [
-        { text: "Jogar novamente", nextScene: 1 }
-      ]
-    },
-    // Cena 92: Desfecho ao tentar fugir com a irmã sem enfrentar a entidade
-    92: {
-      chapter: 3,
-      text: "Você decide agir impulsivamente: corre em direção à sua irmã, arrebentando as correntes enferrujadas com uma força movida pelo pânico. Agarrando a mão dela, você a puxa escada acima antes que a criatura consiga reagir.\n\nVocês disparam pelo saguão e saem mancando para fora da mansão, na fria luz da lua. Atrás de si, um grito de fúria sobrenatural reverbera das entranhas da casa, mas você não olha para trás.\n\nLá fora, ofegantes e em choque, você percebe que conseguiram escapar por um triz. Porém, ao abraçar sua irmã, percebe que o olhar dela está distante e vazio. As provações a deixaram catatônica, e pesadelos a assombrarão para sempre. Você mesmo sente a sanidade se esvaindo após a corrida insana.\n\n**FIM DE JOGO - Final Incerto:** Vocês fugiram com vida da mansão, mas sem derrotar a entidade. Sua irmã foi resgatada fisicamente, porém talvez a sua mente e a dela jamais se recuperem completamente das sombras da memória daquela casa maldita.",
-      options: [
-        { text: "Jogar novamente", nextScene: 1 }
-      ]
-    },
-    // Cena 99: Final de fugir (desistência no início)
-    99: {
-      chapter: 1,
-      text: "O medo fala mais alto. Você dá alguns passos para trás, tremendo, e decide que não pode prosseguir. A mansão Blackwood retém seus segredos e, infelizmente, possivelmente sua irmã. Incapaz de encarar os horrores desconhecidos que espreitam lá dentro, você foge pela escuridão da noite, em direção à segurança relativa da cidade.\n\nDias depois, a polícia conduz uma busca na mansão, mas nada é encontrado. Sua irmã permanece desaparecida. Você carrega o peso da culpa e das dúvidas sobre o que poderia ter acontecido se tivesse tido coragem de continuar.\n\n**FIM DE JOGO - Você Fugiu:** Sua sanidade pode estar intacta, mas ao custo de abandonar quem você ama. As sombras da memória daquela decisão o assombrarão para sempre.",
-      options: [
-        { text: "Jogar novamente", nextScene: 1 }
-      ]
-    }
-  };
-
-  // Função para atualizar a interface de estatísticas (sanidade, memórias, capítulo, inventário)
-  function updateStats() {
-    memoryCountEl.textContent = memory;
-    sanityCountEl.textContent = sanity;
-    chapterCountEl.textContent = chapter;
-    // Atualiza inventário exibido (lista de itens separados por vírgula ou "vazio")
-    if (inventory.length > 0) {
-      inventoryListEl.textContent = inventory.join(', ');
-    } else {
-      inventoryListEl.textContent = "Nenhum";
-    }
-  }
-
-  // Função principal para exibir uma cena pelo id
-  function showScene(sceneId) {
-    const scene = scenes[sceneId];
-    currentScene = sceneId;
-    // Atualiza capítulo atual se a cena define um capítulo
-    if (scene.chapter) {
-      chapter = scene.chapter;
-    }
-    // Define o texto da cena (pode ser string ou função já avaliada para alguns casos dinâmicos)
-    dialogueTextEl.textContent = typeof scene.text === 'function' ? scene.text() : scene.text;
-    // Atualiza nome do narrador/personagem se houver (caso futuro de diálogos)
-    if (scene.speaker) {
-      characterNameEl.textContent = scene.speaker;
-    } else {
-      characterNameEl.textContent = ""; // Se não há nome, limpa
-    }
-    // Limpa quaisquer opções anteriores
-    dialogueOptionsEl.innerHTML = "";
-    // Define imagem de cena se fornecido (aqui não usamos imagens específicas, mas poderíamos)
-    if (scene.image) {
-      sceneImageEl.style.backgroundImage = `url('${scene.image}')`;
-    } else {
-      sceneImageEl.style.backgroundImage = "none";
-    }
-    // Para cada opção, cria um botão de escolha
-    scene.options.forEach(option => {
-      const btn = document.createElement('button');
-      btn.textContent = option.text;
-      btn.addEventListener('click', () => chooseOption(option));
-      dialogueOptionsEl.appendChild(btn);
-    });
-    // Atualiza indicadores de status na tela
-    updateStats();
-  }
-
-  // Função chamada ao escolher uma opção de decisão
-  function chooseOption(option) {
-    // Aplica efeitos na sanidade, memórias ou capítulo se definidos na opção
-    if (option.effectSanity) {
-      sanity += option.effectSanity;
-      if (sanity < 0) sanity = 0;
-    }
-    if (option.effectMemory) {
-      memory += option.effectMemory;
-    }
-    if (option.addItem) {
-      // adiciona item ao inventário (se não já obtido)
-      if (!inventory.includes(option.addItem)) {
-        inventory.push(option.addItem);
-      }
-    }
-    if (option.nextScene) {
-      // Se a sanidade chegou a zero ou abaixo, desencadeia final de insanidade (enlouquecer) em vez da próxima cena normal
-      if (sanity <= 0) {
-        // Vai para o final de loucura (vamos usar cena 90 enfrentando sem memórias, ou podemos criar uma cena específica)
-        showScene(90);  // Cena 90 lida com final de insanidade caso memory <1, mas aqui independentemente mandamos para loucura
-        return;
-      }
-      // Caso contrário, prossegue normalmente para a cena indicada
-      showScene(option.nextScene);
-    }
-  }
-
-  // Funções dos botões de controle
-  const audioElement = document.getElementById('bg-audio');
-  const soundBtn = document.getElementById('soundBtn');
-  const restartBtn = document.getElementById('restartBtn');
-  const saveBtn = document.getElementById('saveBtn');
-  const loadBtn = document.getElementById('loadBtn');
-
-  // Controle de som: ligar/desligar música de fundo
-  soundBtn.addEventListener('click', () => {
-    if (audioElement.paused) {
-      audioElement.volume = 0.5;    // volume médio
-      audioElement.play();
-      soundBtn.textContent = "Som: Ligado";
-    } else {
-      audioElement.pause();
-      soundBtn.textContent = "Som: Desligado";
-    }
-  });
-
-  // Reiniciar jogo
-  restartBtn.addEventListener('click', () => {
-    // Reseta variáveis de estado para valores iniciais
-    sanity = 100;
-    memory = 0;
-    chapter = 1;
-    inventory = ["Carta Enigmática", "Diário da Irmã"];
-    // Atualiza UI e inicia da cena 1
-    showScene(1);
-    // Pausa a música e reseta controle de som
-    audioElement.pause();
-    soundBtn.textContent = "Som: Desligado";
-  });
-
-  // Salvar jogo
-  saveBtn.addEventListener('click', () => {
-    const state = {
-      scene: currentScene,
-      chapter: chapter,
-      sanity: sanity,
-      memory: memory,
-      inventory: inventory
-    };
-    try {
-      localStorage.setItem('sombrasSave', JSON.stringify(state));
-      alert("Jogo salvo com sucesso!");
-    } catch (e) {
-      alert("Não foi possível salvar o jogo (localStorage indisponível).");
-    }
-  });
-
-  // Carregar jogo salvo
-  loadBtn.addEventListener('click', () => {
-    const stateData = localStorage.getItem('sombrasSave');
-    if (stateData) {
-      try {
-        const state = JSON.parse(stateData);
-        // Restaura estado
-        chapter = state.chapter;
-        sanity = state.sanity;
-        memory = state.memory;
-        inventory = state.inventory || [];
-        // Inicia a cena salva
-        showScene(state.scene);
-        alert("Jogo carregado!");
-      } catch (e) {
-        alert("Erro ao carregar o jogo salvo.");
-      }
-    } else {
-      alert("Nenhum jogo salvo encontrado.");
-    }
-  });
-
-  // Inicialização do jogo: definir inventário inicial e mostrar primeira cena
-  // Itens iniciais: carta e diário mencionados na introdução
-  inventory = ["Carta Enigmática", "Diário da Irmã"];
-  showScene(1);
-</script>
-</body>
-</html>
+        
+        // Reiniciar jogo
+        restartBtn.addEventListener('click', () => {
+            // Resetar estado do jogo
+            gameState = {
+                sanity: 100,
+                currentScene: "start",
+                soundEnabled: gameState.soundEnabled,
+                visitedScenes: new Set(["start"])
+            };
+            
+            // Resetar sanidade visualmente
+            sanityFill.style.width = "100%";
+            sanityValue.textContent = "100%";
+            sanityText.textContent = "Estável";
+            
+            // Esconder tela de game over
+            gameOverScreen.style.display = "none";
+            
+            // Reiniciar áudio de fundo
+            if (gameState.soundEnabled) {
+                bgSound.currentTime = 0;
+                bgSound.play().catch(e => console.log("Autoplay bloqueado pelo navegador"));
+            }
+            
+            // Mostrar cena inicial
+            showScene("start");
+        });
+        
+        // Iniciar jogo
+        showScene("start");
+        
+        // Inicializar efeitos de passos
+        updateFootsteps();
+    </script>
